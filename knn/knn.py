@@ -9,11 +9,7 @@ from sklearn.metrics import accuracy_score
 
 def Predict(testset, trainset, train_labels):
     predict = []  # 保存测试集预测到的label，并返回
-    count = 0  # 当前测试数据为第count个
-
-    for test_vec in testset:
-        # 输出当前运行的测试用例坐标，用于测试
-        count += 1
+    for count, test_vec in enumerate(testset, start=1):
         print("the number of %d is predicting..."%count)
 
         knn_list = []       # 当前k个最近邻居
@@ -46,10 +42,10 @@ def Predict(testset, trainset, train_labels):
                 max_index = -1
                 max_dist = 0
 
-        
+
         # 统计选票
         class_total = k
-        class_count = [0 for i in range(class_total)]
+        class_count = [0 for _ in range(class_total)]
         for dist, label in knn_list:
             class_count[label] += 1
 

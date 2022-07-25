@@ -72,16 +72,16 @@ class MaxEnt(object):
         计算P(y|x),根据P85公式6.22
         '''
         Pyxs = [(self.cal_Zx(X, y)) for y in self.Y_]
-        Zwx = sum([prob for prob, y in Pyxs])
+        Zwx = sum(prob for prob, y in Pyxs)
         return [(prob / Zwx, y) for prob, y in Pyxs]
 
     def cal_Epfi(self):
         '''
         计算Ep(fi),根据P83最上面的公式
         '''
-        self.Epfi = [0.0 for i in range(self.n)]
+        self.Epfi = [0.0 for _ in range(self.n)]
 
-        for i, X in enumerate(self.X_):
+        for X in self.X_:
             Pyxs = self.cal_Pyx(X)
 
             for x in X:
@@ -99,7 +99,7 @@ class MaxEnt(object):
         self.init_params(X, Y)
 
         # 第一步： 初始化参数值wi为0
-        self.w = [0.0 for i in range(self.n)]
+        self.w = [0.0 for _ in range(self.n)]
 
         max_iteration = 500  # 设置最大迭代次数
         for times in range(max_iteration):
@@ -133,9 +133,7 @@ def rebuild_features(features):
     '''
     new_features = []
     for feature in features:
-        new_feature = []
-        for i, f in enumerate(feature):
-            new_feature.append(str(i) + '_' + str(f))
+        new_feature = [f'{str(i)}_{str(f)}' for i, f in enumerate(feature)]
         new_features.append(new_feature)
     return new_features
 
