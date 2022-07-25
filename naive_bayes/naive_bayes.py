@@ -63,7 +63,7 @@ def Predict(testset, prior_probability, conditional_probability):
     for img in testset:
 
         img = binaryzation(img)  # 图像二值化
-    
+
         max_label = 0
         max_probability = calculate_probability(img, 0)
 

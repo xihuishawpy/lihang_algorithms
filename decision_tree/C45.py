@@ -51,7 +51,7 @@ class Tree(object):
 
 # 计算数据集x的经验熵H(x)
 def calc_ent(x):
-    x_value_list = set([x[i] for i in range(x.shape[0])])
+    x_value_list = {x[i] for i in range(x.shape[0])}
     ent = 0.0
     for x_value in x_value_list:
         p = float(x[x == x_value].shape[0]) / x.shape[0]
@@ -62,7 +62,7 @@ def calc_ent(x):
 
 # 计算条件熵H(y/x)
 def calc_condition_ent(x, y):
-    x_value_list = set([x[i] for i in range(x.shape[0])])
+    x_value_list = {x[i] for i in range(x.shape[0])}
     ent = 0.0
     for x_value in x_value_list:
         sub_y = y[x == x_value]
@@ -75,9 +75,7 @@ def calc_condition_ent(x, y):
 def calc_ent_grap(x,y):
     base_ent = calc_ent(y)
     condition_ent = calc_condition_ent(x, y)
-    ent_grap = base_ent - condition_ent
-
-    return ent_grap
+    return base_ent - condition_ent
 
 # C4.5算法
 def recurse_train(train_set,train_label,features):
@@ -93,7 +91,7 @@ def recurse_train(train_set,train_label,features):
     # 步骤2——如果特征集features为空
     class_len = [(i,len(list(filter(lambda x:x==i,train_label)))) for i in range(class_num)] # 计算每一个类出现的个数
     (max_class,max_len) = max(class_len,key = lambda x:x[1])
-    
+
     if len(features) == 0:
         return Tree(LEAF,Class = max_class)
 
@@ -119,13 +117,17 @@ def recurse_train(train_set,train_label,features):
     tree = Tree(INTERNAL,feature=max_feature)
 
     max_feature_col = np.array(train_set[:,max_feature].flat)
-    feature_value_list = set([max_feature_col[i] for i in range(max_feature_col.shape[0])]) # 保存信息增益最大的特征可能的取值 (shape[0]表示计算行数)
+    feature_value_list = {
+        max_feature_col[i] for i in range(max_feature_col.shape[0])
+    }
+
     for feature_value in feature_value_list:
 
-        index = []
-        for i in range(len(train_label)):
-            if train_set[i][max_feature] == feature_value:
-                index.append(i)
+        index = [
+            i
+            for i in range(len(train_label))
+            if train_set[i][max_feature] == feature_value
+        ]
 
         sub_train_set = train_set[index]
         sub_train_label = train_label[index]
@@ -158,7 +160,7 @@ if __name__ == '__main__':
 
     raw_data = pd.read_csv('../data/train.csv', header=0)  # 读取csv数据
     data = raw_data.values
-    
+
     imgs = data[::, 1::]
     features = binaryzation_features(imgs) # 图片二值化(很重要，不然预测准确率很低)
     labels = data[::, 0]
@@ -178,11 +180,11 @@ if __name__ == '__main__':
     test_predict = predict(test_features,tree)
     time_4 = time.time()
     print('predicting cost %f seconds' % (time_4 - time_3))
-    
+
     # print("预测的结果为：")
     # print(test_predict)
     for i in range(len(test_predict)):
-        if test_predict[i] == None:
+        if test_predict[i] is None:
             test_predict[i] = epsilon
     score = accuracy_score(test_labels, test_predict)
     print("The accruacy score is %f" % score)

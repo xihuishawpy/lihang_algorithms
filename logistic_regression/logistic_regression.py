@@ -32,7 +32,7 @@ class LogisticRegression(object):
                 correct_count += 1
                 continue
 
-            wx = sum([self.w[i] * x[i] for i in range(len(self.w))])
+            wx = sum(self.w[i] * x[i] for i in range(len(self.w)))
             while wx>700: # 控制运算结果越界
                 wx/=2
             exp_wx = math.exp(wx)
@@ -42,7 +42,7 @@ class LogisticRegression(object):
                     (-y * x[i] + float(x[i] * exp_wx) / float(1 + exp_wx))
 
     def predict_(self,x):
-        wx = sum([self.w[j] * x[j] for j in range(len(self.w))])
+        wx = sum(self.w[j] * x[j] for j in range(len(self.w)))
         while wx>700: # 控制运算结果越界
             wx/=2
         exp_wx = math.exp(wx)
@@ -50,10 +50,7 @@ class LogisticRegression(object):
         predict1 = exp_wx / (1 + exp_wx)
         predict0 = 1 / (1 + exp_wx)
 
-        if predict1 > predict0:
-            return 1
-        else:
-            return 0
+        return 1 if predict1 > predict0 else 0
 
 
     def predict(self,features):

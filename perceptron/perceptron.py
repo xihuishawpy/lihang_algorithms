@@ -24,13 +24,13 @@ class Perceptron(object):
         while correct_count < self.max_iteration:
 
             # 随机选取数据(xi,yi)
-            index = random.randint(0, len(labels) - 1) 
+            index = random.randint(0, len(labels) - 1)
             x = list(features[index])
             x.append(1.0)  # 加上1是为了与b相乘
             y = 2 * labels[index] - 1  # label为1转化为正实例点+1，label为0转化为负实例点-1
 
             # 计算w*xi+b
-            wx = sum([self.w[j] * x[j] for j in range(len(self.w))])
+            wx = sum(self.w[j] * x[j] for j in range(len(self.w)))
 
             # 如果yi(w*xi+b) > 0 则分类正确的次数加1
             if wx * y > 0:
@@ -42,7 +42,7 @@ class Perceptron(object):
                 self.w[i] += self.learning_step * (y * x[i])
 
     def predict_(self, x):
-        wx = sum([self.w[j] * x[j] for j in range(len(self.w))])
+        wx = sum(self.w[j] * x[j] for j in range(len(self.w)))
         return int(wx > 0)  # w*xi+b>0则返回返回1,否则返回0
     
     def predict(self, features):
